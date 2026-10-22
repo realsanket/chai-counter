@@ -1,19 +1,15 @@
-# CI/CD for Chai Counter: every push to the cicd branch is tested; a green build goes into the registry,
-# and production waits for a reviewer's approval (the GitHub environment "production").
+# CI/CD for Chai Counter: every push to the cicd branch is tested, and only a green commit is packed into an image and
+# pushed to GitHub's own registry (ghcr.io). The approval and the deploy after it are the next stations (the reel
+# shows them; a real gate needs a "production" environment with required reviewers in the repo's settings).
 name: CI/CD
 
 on:
   push:
     branches: [cicd]
 
-env:                # the demo's Azure resources (Instagram reel + Container Apps Part 3; deleted after recording)
-  ACR_NAME: chaicicd1022k4
-  AZURE_RG: rg-demo-1022-cicd
-  APP_NAME: chai-counter-cicd
-
 permissions:
   contents: read
-  id-token: write   # Azure sign-in with OpenID Connect: no password is stored in GitHub
+  packages: write   # push to ghcr.io with the run's own token: no secret to store
 
 jobs:
   test:
@@ -29,29 +25,13 @@ jobs:
         run: pytest -v
 
   build:
-    needs: test
+    needs: test     # a red test stops the dabba here: no image is built
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - name: Build the image and push it to the registry
-        run: az acr build --registry $ACR_NAME --image chai-counter:${{ github.sha }} .
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production   # a reviewer approves before this job runs
-    steps:
-      - uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - name: Deploy this commit's image
-        run: >
-          az containerapp update --name $APP_NAME --resource-group $AZURE_RG
-          --image $ACR_NAME.azurecr.io/chai-counter:${{ github.sha }}
+      - name: Sign in to the registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Build the image
+        run: docker build -t ghcr.io/realsanket/chai-counter:${{ github.sha }} .
+      - name: Push it to the registry
+        run: docker push ghcr.io/realsanket/chai-counter:${{ github.sha }}
