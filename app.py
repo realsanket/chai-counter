@@ -18,7 +18,7 @@ MAX_CUPS = 20
 
 def free_cups(cups):
     """The offer: buy 4 cups of chai, the 5th is free."""
-    return cups // 6
+    return cups // 5
 
 
 def total_for(cups):
