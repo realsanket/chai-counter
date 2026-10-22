@@ -5,28 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chai Counter</title>
   <style>
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #3b2314;
-           background: linear-gradient(160deg, #fff6e5 0%, #ffd9a8 100%); min-height: 100vh; }
-    main { max-width: 640px; margin: 64px auto; background: #fffdf8; border-radius: 28px; padding: 44px;
-           box-shadow: 0 18px 50px rgba(122, 62, 18, .18); }
-    h1 { margin: 0 0 6px; font-size: 48px; color: #7a3e12; }
-    .badge { display: inline-block; margin-left: 10px; padding: 4px 12px; border-radius: 999px; font-size: 16px;
-             vertical-align: middle; background: #e07b1f; color: #fff; }
-    .sub { margin: 0 0 32px; color: #9a6a45; font-size: 20px; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f4f4; color: #222; }
+    main { max-width: 640px; margin: 64px auto; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 40px; }
+    h1 { margin: 0 0 6px; font-size: 44px; }
+    .sub { margin: 0 0 32px; color: #666; font-size: 20px; }
     .row { display: flex; align-items: center; gap: 20px; font-size: 28px; }
-    .row a { display: inline-block; width: 60px; height: 60px; line-height: 58px; text-align: center; border-radius: 50%;
-             text-decoration: none; background: #e07b1f; color: #fff; font-size: 32px; }
-    .cups { min-width: 130px; text-align: center; font-weight: 600; }
+    .row a { display: inline-block; width: 56px; height: 56px; line-height: 54px; text-align: center; border: 1px solid #999;
+             border-radius: 6px; text-decoration: none; color: #222; font-size: 32px; }
+    .cups { min-width: 130px; text-align: center; }
     .total { margin: 32px 0 0; font-size: 28px; }
-    .total b { display: inline-block; font-size: 56px; padding: 2px 22px; border-radius: 18px; background: #fff0d9; color: #7a3e12; }
-    footer { margin-top: 36px; padding-top: 18px; border-top: 1px dashed #f0c58f; font-size: 18px; color: #9a6a45; line-height: 1.7; }
-    footer code { color: #3b2314; }
+    .total b { font-size: 56px; }
+    footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid #eee; font-size: 18px; color: #777; line-height: 1.7; }
+    footer code { color: #333; }
   </style>
 </head>
 <body>
   <main>
-    <h1>☕ Chai Counter <span class="badge">new look</span></h1>
-    <p class="sub">Fresh chai. Honest total.</p>
+    <h1>Chai Counter</h1>
+    <p class="sub">Pick your cups. We add it up.</p>
 
     <div class="row">
       <a href="/?cups={{ [cups - 1, 0] | max }}" aria-label="One cup less">−</a>

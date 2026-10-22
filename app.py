@@ -11,7 +11,7 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-VERSION = "v2"          # which version of the app this is (v2: the new design)
+VERSION = "v1"          # which version of the app this is (v2 changes the design)
 PRICE_PER_CUP = 20      # rupees
 MAX_CUPS = 20
 
