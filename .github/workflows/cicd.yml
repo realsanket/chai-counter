@@ -1,0 +1,52 @@
+# CI/CD for Chai Counter: every push to the cicd branch is tested; a green build goes into the registry,
+# and production waits for a reviewer's approval (the GitHub environment "production").
+name: CI/CD
+
+on:
+  push:
+    branches: [cicd]
+
+permissions:
+  contents: read
+  id-token: write   # Azure sign-in with OpenID Connect: no password is stored in GitHub
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements.txt pytest
+      - name: Test
+        run: pytest -v
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Build the image and push it to the registry
+        run: az acr build --registry ${{ vars.ACR_NAME }} --image chai-counter:${{ github.sha }} .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production   # a reviewer approves before this job runs
+    steps:
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy this commit's image
+        run: >
+          az containerapp update --name ${{ vars.APP_NAME }} --resource-group ${{ vars.AZURE_RG }}
+          --image ${{ vars.ACR_NAME }}.azurecr.io/chai-counter:${{ github.sha }}

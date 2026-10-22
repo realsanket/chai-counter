@@ -15,6 +15,7 @@
     .cups { min-width: 130px; text-align: center; }
     .total { margin: 32px 0 0; font-size: 28px; }
     .total b { font-size: 56px; }
+    .offer { margin: 24px 0 0; font-size: 20px; color: #2f7d32; font-weight: 600; }
     footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid #eee; font-size: 18px; color: #777; line-height: 1.7; }
     footer code { color: #333; }
   </style>
@@ -30,7 +31,8 @@
       <a href="/?cups={{ [cups + 1, max_cups] | min }}" aria-label="One cup more">+</a>
     </div>
 
-    <p class="total">{{ cups }} × ₹{{ price }} = <b>₹{{ total }}</b></p>
+    <p class="offer">Offer: 4 chai lo, 5vi free</p>
+    <p class="total">{{ cups }} × ₹{{ price }}{% if free %} − {{ free }} free{% endif %} = <b>₹{{ total }}</b></p>
 
     <footer>
       Version <code>{{ version }}</code><br>

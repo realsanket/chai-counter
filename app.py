@@ -11,14 +11,19 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-VERSION = "v1"          # which version of the app this is (v2 changes the design)
+VERSION = "offer"       # which version of the app this is (branch cicd: the "4 lo, 5vi free" offer)
 PRICE_PER_CUP = 20      # rupees
 MAX_CUPS = 20
 
 
+def free_cups(cups):
+    """The offer: buy 4 cups of chai, the 5th is free."""
+    return cups // 6
+
+
 def total_for(cups):
-    """The whole 'business logic' of the app: cups × price."""
-    return cups * PRICE_PER_CUP
+    """The whole 'business logic' of the app: the cups you pay for × price."""
+    return (cups - free_cups(cups)) * PRICE_PER_CUP
 
 
 @app.route("/")
@@ -31,6 +36,7 @@ def home():
         version=VERSION,
         cups=cups,
         price=PRICE_PER_CUP,
+        free=free_cups(cups),
         total=total_for(cups),
         max_cups=MAX_CUPS,
         # Azure Container Apps sets these two in every container it runs, so the page can show
