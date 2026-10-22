@@ -15,8 +15,9 @@ It's the practice app for the **Sketch the Cloud** videos on Azure Container App
 | `Dockerfile` | The recipe for the container image: runtime + dependencies + code, and how to start it. |
 | `.dockerignore` | Files the image doesn't need. |
 
-Two versions are tagged: **`v1`** (the first design) and **`v2`** (a new design). Compare them:
-`git diff v1 v2`.
+Two versions live in two branches: **`v1`** (the first design) and **`v2`** (a new design); `main` is the latest.
+Compare them on GitHub ([v1…v2](https://github.com/realsanket/chai-counter/compare/v1...v2)) or with
+`git diff origin/v1 origin/v2`.
 
 ---
 
